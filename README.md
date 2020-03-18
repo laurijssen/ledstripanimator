@@ -66,7 +66,7 @@ public:
 ```
 
 First, we declare the Move class and let it inherit from Animation. Now it can be added to the AnimList.
-We set the ms value to 500 which means that every 500 milliseconds UpdateFrame is called and the LED moves twice a second on the strip.
+We set the ms value to 500 which means that every 500 milliseconds UpdateFrame is called and the LED moves twice a second on the strip. This works because the arduino is a realtime operating system and 500 milliseconds is always 500 milliseconds.
 
 Then override UpdateFrame and Render. You have to do this as they are pure virtuals, otherwise the code does not compile.
 
@@ -76,9 +76,9 @@ Then in UpdateFrame we just increment the cur variable so it moves up one positi
 We check if cur has reached the LED and if it has then we remove it from the animation list by returning false.
 The AnimList takes care of that.
 
-In Render we call only Adafruit's neopixe3l library function setPixelColor and pass it the current variable and an RGB value of RGB(10,10,10)
+In Render we call only Adafruit's neopixel library function setPixelColor and pass it the current variable and an RGB value of RGB(10,10,10)
 
-This is white.
+This is white. Do not use the maximum RGB(255, 255, 255) as this takes way too much energy, the leds will cannot handle that.
 
 So now we have a strip where one led ligts up and it moves twice a second on the ledstrip.
 After it reaches the last LED it does nothiong anymore.
