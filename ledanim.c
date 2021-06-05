@@ -1,9 +1,7 @@
-#pragma once
-
 #include <Adafruit_NeoPixel.h>
 
 #define NUMLEDS 144
-#define BRIGHTNESS ((rand() % 5)+5)
+#define BRIGHTNESS ((char)((rand() % 5)+5))
 
 #define DEG2RAD(deg) ((deg) * (PI/180))
 
@@ -191,6 +189,38 @@ struct RGB
   char r,g,b;
 };
 
+class Glow : public Animation
+{
+  short start, end;
+  const RGB col;
+  int deg = 1;
+public:
+  Glow(short start, short end, const RGB &rgb) : col(rgb), start(start), end(end)
+  {
+    ms = 5;
+  }
+
+  bool UpdateFrame(Adafruit_NeoPixel &strip)
+  {
+    return true;
+  }
+
+  void Render(Adafruit_NeoPixel &strip)
+  {
+    bool fwd = end > start;
+
+    RGB rgb;
+    rgb.r = (int)fabs((sin(DEG2RAD(millis() / 10)) * col.r));
+    rgb.g = (int)fabs((sin(DEG2RAD(millis() / 10)) * col.g));
+    rgb.b = (int)fabs((sin(DEG2RAD(millis() / 10)) * col.b));
+    
+    for (int i = start; fwd ? i < end : i >= end; i += fwd ? 1 : -1)
+    {      
+      strip.setPixelColor(i, strip.Color(rgb.r, rgb.g, rgb.b)); 
+    }
+  }
+};
+
 class Rain : public Animation
 {
   short start, end;
@@ -249,9 +279,14 @@ Rain r2(40, 80, {BRIGHTNESS, BRIGHTNESS, 0 }) ;
 Rain r3(90, 120, {0, BRIGHTNESS, BRIGHTNESS }) ;
 Rain r4(90, 120, {0, BRIGHTNESS, BRIGHTNESS }) ;
 
+Glow glow(0, 50, RGB{0, 0, 10});
+Glow glow2(50, 100, RGB{10, 0, 10});
+
 void setup() {
   Serial.begin(9600);
   list = new AnimList(NUMLEDS);  
+  list->AddFirst(&glow);
+  list->Add(&glow2);
   //list->AddFirst(&s);
   //list->Add(&m1);
   //list->Add(&m2);
@@ -261,7 +296,7 @@ void loop() {
   list->UpdateFrame();
   list->Render();
 
-  if (!list->Find(&r1))
+  /*if (!list->Find(&r1))
   {
     r1 = Rain (rand() % NUMLEDS, rand() % NUMLEDS, {BRIGHTNESS, 0, 15 }) ;
     list->AddFirst(&r1);
@@ -280,5 +315,5 @@ void loop() {
   {
     r4 = Rain(rand() % NUMLEDS, rand() % NUMLEDS, {BRIGHTNESS, BRIGHTNESS, BRIGHTNESS }) ;
     list->AddFirst(&r4);
-  }
+  }*/
 }
