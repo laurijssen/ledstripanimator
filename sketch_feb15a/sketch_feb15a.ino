@@ -140,7 +140,7 @@ private:
   unsigned char cur;
   uint32_t col;
 public:
-  Move(unsigned char cur) : cur(cur) { ms = 0; }
+  Move(unsigned char cur) : cur(cur) { ms = 20; }
 
   bool UpdateFrame(Adafruit_NeoPixel &strip)
   {    
@@ -308,14 +308,17 @@ Rain r2(40, 80, {BRIGHTNESS, BRIGHTNESS, 0 }) ;
 Rain r3(90, 120, {0, BRIGHTNESS, BRIGHTNESS }) ;
 Rain r4(90, 120, {0, BRIGHTNESS, BRIGHTNESS }) ;
 
-Glow glow(0, 50, RGB{0, 0, 10});
-Glow glow2(50, 100, RGB{10, 0, 10});
+//Glow glow(0, 50, RGB{0, 0, 10});
+//Glow glow2(50, 100, RGB{10, 0, 10});
+
+Duo m(0);
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   list = new AnimList(NUMLEDS);  
-  list->AddFirst(&glow);
-  list->Add(&glow2);
+  //list->AddFirst(&glow);
+  //list->Add(&glow2);
+  list->AddFirst(&m);
   //list->AddFirst(&s);
   //list->Add(&m1);
   //list->Add(&m2);
